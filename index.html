@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    *{
+      margin: 0px;
+      padding: 0px;
+      box-sizing: border-box;
+    }
+    .container{
+      width: 600px;
+      height: 200px;
+      border: 1px solid #000000;
+      margin: 100px auto;
+    }
+    .choice{
+      width: 300px;
+      height: 200px;
+      border-right: 1px solid #000000;
+      float: left;
+    }
+    .choice ul{
+      width: 300px;
+      height: 200px;
+    }
+    .choice ul li{
+      width: 250px;
+      height: 40px;
+      list-style: none;
+      line-height: 40px;
+      border:1px solid #000000;
+      border-radius: 3px;
+      margin: 6px auto;
+      text-align: center;
+      position: relative;
+      font-family: '仿宋';
+      font-weight:900;
+      font-size: 14px;
+    }
+    ul li a{
+      width: 25px;
+      height: 25px;
+      font-size: 25px;
+      font-weight: 600;
+      background-color: green;
+      text-decoration: none;
+      display:inline-block;
+      position: absolute;
+      right:10px;
+      top: 7px;
+      line-height: 25px;
+    }
+    .content{
+      width: 298px;
+      height: 200px;
+      float: right;
+    }
+    .content p{
+      text-align: center;
+      height: 30px;
+      line-height: 30px;
+    }
+    .choiceInfo{
+      width: 100%;
+    }
+    .choiceInfo p{
+      height: 30px;
+      line-height: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="choice">
+      <ul>
+        <li><span>数据结构与算法</span><a href="javascript:;">+</a></li>
+        <li><span>计算机网络</span><a href="javascript:;">+</a></li>
+        <li><span>javascript高级程序设计</span><a href="javascript:;">+</a></li>
+        <li><span>计算机组成原理</span><a href="javascript:;">+</a></li>
+      </ul>
+    </div>
+    <div class="content">
+      <p id="count">您所选择的课程数量是3</p>
+      <hr>
+      <div id="choiceInfo">
+        <p>数据结构与算法</p>
+        <p>计算机组成原理</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    class Lession{
+      constructor(){
+        this.lis = document.querySelectorAll("ul>li");
+        this.counts = document.getElementById("count");
+        this.choiceInfo = document.getElementById("choiceInfo");
+        this.map = new WeakMap();
+      }
+      run(){
+        this.render();
+        this.lis.forEach(li=>{
+          li.querySelector("a").addEventListener("click",(event)=>{
+            let states = li.getAttribute("select");
+            let a = event.target;
+            if(states){
+              li.removeAttribute("select");
+              this.map.delete(li);
+              a.innerHTML = "+";
+              a.style.backgroundColor = "green";
+            }
+            else{
+              li.setAttribute('select',true);
+              this.map.set(li);
+              a.innerHTML = "-";
+              a.style.backgroundColor = "red";
+            }
+            this.render();
+          })
+        })
+      }
+      render(){
+        this.counts.innerHTML = `您所选择的课程数量是${this.count()}`;
+        this.choiceInfo.innerHTML = this.info();
+      }
+      count(){
+        return [...this.lis].reduce((count,li)=>{
+          return count += this.map.has(li)?1:0;
+        },0)
+      }
+      info(){
+        return [...this.lis].filter(item =>{
+          return this.map.has(item)
+        }).map(li=>{
+          return `<p>${li.querySelector("span").innerHTML}</p>`;
+        }).join("");
+      }
+    }
+    new Lession().run();
+  </script>
+</body>
+</html>
+
+
